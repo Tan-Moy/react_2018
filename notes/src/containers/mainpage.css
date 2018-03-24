@@ -1,16 +1,6 @@
 
 ._mainPage {
   text-align: center;
-  width: 60%;
+  width: 70%;
   margin: 5% auto; 
-}
-
-#_newNoteArea{
-  border: 1px solid;
-  padding: 0.5em; 
-  width: 100%;
-  resize: none;
-  /*height: 3em;*/
-  overflow: none;
-  line-height: 1;
 }
