@@ -3,3 +3,6 @@ body{
   width: 100%;
 }
 
+*:focus {
+    outline: none;
+}
