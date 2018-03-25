@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BodyArea from '../../components/bodyarea/bodyarea'
 import TitleArea from '../../components/titlearea/titlearea'
 import Tags from '../../components/tags/tags'
+import Lists from '../listings/listing'
 import styles from './mainpage.css'
 
 class MainPage extends Component{
@@ -25,12 +26,11 @@ class MainPage extends Component{
 		body_area_height: 3,
 		title_area_height:3,
 
-		tag_display:'hidden',
-		title_display: 'hidden'
+		flyout_display:'hidden',
 	}
 
 
-	ChangeHandler = (e) => {
+	changeHandler = (e) => {
 		let oldbodyheight = this.state.body_area_height;
 		let oldtitleheight = this.state.title_area_height;
 		// console.log('changed value',e.target.value)
@@ -54,34 +54,31 @@ class MainPage extends Component{
 	}
 
 
+	clickHandler = (type=null,e) =>{
+		console.log("button: ",type)
+		if (type === 'title' && e.target.scrollHeight > e.target.clientHeight) {
+			this.setState({title_area_height:5})
+		}else if(type === 'button'){
+			// save everything
+			console.log('Done');
+		}
+	}
+
+
 
 	focusGainHandler = (e) => {
 		if (this.state.body_area_height < 5 ){	
 			this.setState({body_area_height:5});
 		};
-		this.setState({title_display:'visible'});
-		this.setState({tag_display:'visible'});
-
-		// this.setState({body_area_height:2})
-		// console.log(e.currentTarget);
-
-		// if(e.target.name !== 'titlearea' && e.target.name !== 'bodyarea'){
-		// 	console.log('the title area is hidden')
-		// }
-		// console.log('I got focus');
-		// console.log(newPost)
-		// to do 
-		// hide the title bar
-
-		// save the note on focus lost
+		this.setState({flyout_display:'visible'});
 	}
 
 	focusLostHandler = (e) => {
 		// console.log('lost focus');
 		this.setState({body_area_height:3});
+		this.setState({title_area_height:3});
 		if (!e.currentTarget.contains(e.relatedTarget)) {
-			this.setState({title_display:'hidden'});
-			this.setState({tag_display:'hidden'});
+			this.setState({flyout_display:'hidden'});
     	}
   		// console.log("relatedTarget:", e.relatedTarget)
 	}
@@ -96,24 +93,32 @@ class MainPage extends Component{
 				onBlur={this.focusLostHandler}
 				>
 					<TitleArea 
-					 display = {this.state.title_display}
+					 display = {this.state.flyout_display}
 					 height={this.state.title_area_height}
-					 onchange = {this.ChangeHandler}
+					 onchange = {this.changeHandler}
+					 click = {(e) => this.clickHandler("title",e)}
 					></TitleArea>
 
 					<BodyArea 
 					 something = {this.state.posts}
-					 onchange = {this.ChangeHandler}
+					 onchange = {this.changeHandler}
 					 body = {this.state.posts[0].title}
 					 height={this.state.body_area_height}
 					 ></BodyArea>
 
-					 <Tags
+					<Tags
 					 data = {this.state.posts}
-					 onchange = {this.ChangeHandler}
-					 display = {this.state.tag_display}
-					 ></Tags>
+					 onchange = {this.changeHandler}
+					 display = {this.state.flyout_display}
+					></Tags>
+
+					<button
+					style={{'visibility': this.state.flyout_display}}
+					className={styles._saveBtn}
+					onClick={(e) => this.clickHandler("button",e)}>Done</button>
 				</div>
+					<Lists 
+					data = {this.state.posts}></Lists>
 			</div>
 		)
 	}

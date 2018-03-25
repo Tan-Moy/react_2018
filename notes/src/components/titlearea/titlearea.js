@@ -17,6 +17,7 @@ const TitleArea = (props) => {
 				name="titlearea"
 				style = {updatedStyles}
 				onChange={props.onchange} 
+				onClick = {props.click}
 				></textarea>
 			</div>
 		</div>
