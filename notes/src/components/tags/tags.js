@@ -14,7 +14,7 @@ const Tags = (props) => {
 		<span>
 			<input type="text"
 			id='_tagArea'
-			placeholder="Enter tags here" 
+			placeholder="Enter tags here, separate by space" 
 			list="data" 
 			onChange={props.onchange}
 			style={{visibility: props.display}} />

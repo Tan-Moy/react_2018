@@ -8,7 +8,6 @@ const BodyArea = (props) => {
 			<div className="row">
 				<textarea 
 				 name="bodyarea"
-				 className = 'form-control'
 				 rows='1'
 				 id={styles._newNoteArea}
 				 style={{height: props.height + "em"}} 

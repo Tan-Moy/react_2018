@@ -37,33 +37,46 @@ class MainPage extends Component{
 		
 		if(e.target.name === 'bodyarea'){
 			// console.log("changed the value of: ",e.target)
-			newPost.title = e.target.value; //good spot
+			newPost.body = e.target.value; //good spot
 			if (e.target.scrollHeight > e.target.clientHeight){
 				this.setState({body_area_height:oldbodyheight + 1});
 			}
-		} else if(e.target.name === 'titlearea'){
+		} 
+		else if(e.target.name === 'titlearea'){
+			newPost.title = e.target.value;
 			if (e.target.scrollHeight > e.target.clientHeight){
 				// console.log("a wild scrollbar appeared on title")
 				this.setState({title_area_height:oldtitleheight+ 1})
-			} else if(e.target.type === 'text'){
-				console.log("changed the value of: ",e.target.type)
-			}
+			} 
 		}
+		else if(e.target.type === 'text'){
+			tagsEntered = e.target.value;
+			// console.log("changed the value of: ",e.target.type)
+		}
+
 		// to do
 		// figure out how to make the text area shrink as text is deleted
 	}
 
 
-	clickHandler = (type=null,e) =>{
+	clickHandler = (type=null,e) => {
 		console.log("button: ",type)
 		if (type === 'title' && e.target.scrollHeight > e.target.clientHeight) {
 			this.setState({title_area_height:5})
-		}else if(type === 'button'){
-			// save everything
+		} else if(type === 'button'){
 			console.log('Done');
+			console.log(newPost);
+			if (tagsEntered !== null) {newPost.tags = [...tagsEntered.split(" ")];}
+			// save everything by appending new post to state
+
+
+			//after save clear the input field
+			// this.setState({default:})
+			document.getElementsByName("titlearea")[0].value = null;
+			document.getElementsByName("bodyarea")[0].value = null;
+			document.getElementsByTagName('input')[0].value = null;
 		}
 	}
-
 
 
 	focusGainHandler = (e) => {
@@ -72,6 +85,7 @@ class MainPage extends Component{
 		};
 		this.setState({flyout_display:'visible'});
 	}
+
 
 	focusLostHandler = (e) => {
 		// console.log('lost focus');
@@ -82,6 +96,7 @@ class MainPage extends Component{
     	}
   		// console.log("relatedTarget:", e.relatedTarget)
 	}
+
 
 	render(){
 		return(
@@ -125,12 +140,13 @@ class MainPage extends Component{
 }
 
 //this is what will be updated on clicking the save button or on focus lost
+let tagsEntered = null;
 let newPost = {
 		title: "",
 		body: "",
 		time: null,
 		tags:[],
 		id: null
-	} //putting it in he middle of a class is not allowed
+	} //putting it in the middle of a class is not allowed
 
 export default MainPage;
