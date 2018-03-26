@@ -9,9 +9,10 @@ class Listing extends Component {
 	state = {};
 
 	render(){
+		//to-do
+		//sort the list according to id before using
 		console.log(this.props.data);
-		// let cards = null;
-		// loop through cards
+		
 		//recent cards
 		let recent_cards = (
 			<div>

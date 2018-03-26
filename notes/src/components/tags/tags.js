@@ -17,6 +17,7 @@ const Tags = (props) => {
 			placeholder="Enter tags here, separate by space" 
 			list="data" 
 			onChange={props.onchange}
+			value = {props.value}
 			style={{visibility: props.display}} />
 
             <datalist id="data">

@@ -4,16 +4,14 @@ import TitleArea from '../../components/titlearea/titlearea'
 import Tags from '../../components/tags/tags'
 import Lists from '../listings/listing'
 import styles from './mainpage.css'
+import firebase from '../../firebase'
 
 class MainPage extends Component{
 	state = {
 		// default values
 		title: "",
 		body: "",
-		date: null,
-		tags:[],
-		id: null,
-		pinned: false,
+		tags: "",
 
 		// sample values
 		posts: [{
@@ -46,20 +44,20 @@ class MainPage extends Component{
 		
 		if(e.target.name === 'bodyarea'){
 			// console.log("changed the value of: ",e.target)
-			newPost.body = e.target.value; //good spot
+			this.setState({body:e.target.value})
 			if (e.target.scrollHeight > e.target.clientHeight){
 				this.setState({body_area_height:oldbodyheight + 1});
 			}
 		} 
 		else if(e.target.name === 'titlearea'){
-			newPost.title = e.target.value;
+			this.setState({title:e.target.value})
 			if (e.target.scrollHeight > e.target.clientHeight){
 				// console.log("a wild scrollbar appeared on title")
 				this.setState({title_area_height:oldtitleheight+ 1})
 			} 
 		}
 		else if(e.target.type === 'text'){
-			tagsEntered = e.target.value;
+			this.setState({tags:e.target.value})
 			// console.log("changed the value of: ",e.target.type)
 		}
 
@@ -69,26 +67,45 @@ class MainPage extends Component{
 
 
 	clickHandler = (type=null,e) => {
-		console.log("button: ",type)
+		// console.log("button: ",type)
 		if (type === 'title' && e.target.scrollHeight > e.target.clientHeight) {
 			this.setState({title_area_height:5})
-		} else if(type === 'button'){
-			console.log('Done');
-			console.log(newPost);
-			// configure tags
-			if (tagsEntered !== null) {newPost.tags = [...tagsEntered.split(" ")];}
-			// configure date and id 
-			newPost.date = new Date().toDateString()
-			newPost.id = Date.now()
+		} 
+		else if(type === 'button'){
+			// console.log('Done');
 
-			// save everything by appending new post to state
+			let newPost = {
+				title: "",
+				body: "",
+				date: null,
+				tags:[],
+				id: null,
+				pinned: false
+			}
 
+			// configure the key value pairs
+			newPost.title = this.state.title;
+			newPost.body = this.state.body;
+			if (this.state.tags !== "") {newPost.tags = [...this.state.tags.split(" ")];};
+			newPost.date = new Date().toDateString();
+			newPost.id = Date.now();
+			console.log(newPost)
+
+			// save to post array
+			let arr = [...this.state.posts];
+			arr.push(newPost);
+			this.setState({posts:arr})
+
+			// save to firebase
+			const postsRef = firebase.database().ref('posts');
+			postsRef.push(newPost);
 
 			//after save clear the input field
-			// this.setState({default:})
-			document.getElementsByName("titlearea")[0].value = null;
-			document.getElementsByName("bodyarea")[0].value = null;
-			document.getElementsByTagName('input')[0].value = null;
+			this.setState({
+				title:"",
+				body:"",
+				tags:""
+			});
 		}
 	}
 
@@ -113,6 +130,7 @@ class MainPage extends Component{
 
 
 	render(){
+		console.log(this.state)
 		return(
 			<div className={styles._mainPage} id="fly">
 				<div 
@@ -126,19 +144,21 @@ class MainPage extends Component{
 					 height={this.state.title_area_height}
 					 onchange = {this.changeHandler}
 					 click = {(e) => this.clickHandler("title",e)}
+					 value = {this.state.title}
 					></TitleArea>
 
 					<BodyArea 
 					 something = {this.state.posts}
 					 onchange = {this.changeHandler}
-					 body = {this.state.posts[0].title}
 					 height={this.state.body_area_height}
+					 value = {this.state.body}
 					 ></BodyArea>
 
 					<Tags
 					 data = {this.state.posts}
 					 onchange = {this.changeHandler}
 					 display = {this.state.flyout_display}
+					 value = {this.state.tags}
 					></Tags>
 
 					<button
@@ -154,14 +174,5 @@ class MainPage extends Component{
 }
 
 //this is what will be updated on clicking the save button or on focus lost
-let tagsEntered = null;
-let newPost = {
-		title: "",
-		body: "",
-		date: null,
-		tags:[],
-		id: null,
-		pinned: false
-	} //putting it in the middle of a class is not allowed
 
 export default MainPage;

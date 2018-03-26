@@ -13,6 +13,7 @@ const BodyArea = (props) => {
 				 style={{height: props.height + "em"}} 
 				 placeholder="Take a note"
 				 onChange={props.onchange}  
+				 value = {props.value}
 				 ></textarea>
 			</div>
 		</div>
