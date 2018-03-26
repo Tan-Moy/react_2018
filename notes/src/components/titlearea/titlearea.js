@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './titlearea.css'
 
 const TitleArea = (props) => {
-	console.log(props.value);
+	// console.log(props.value);
 	const updatedStyles = {
 		'visibility': props.display,
 		'height': props.height + "em"

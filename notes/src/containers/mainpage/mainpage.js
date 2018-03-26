@@ -7,25 +7,34 @@ import styles from './mainpage.css'
 
 class MainPage extends Component{
 	state = {
+		// default values
+		title: "",
+		body: "",
+		date: null,
+		tags:[],
+		id: null,
+		pinned: false,
+
+		// sample values
 		posts: [{
 			title: "Tempor laborum eu laboris ullamco.",
 			body: "Ex elit laboris dolor irure in cupidatat esse aute dolore occaecat sit sunt reprehenderit sit in sed veniam cupidatat in.",
-			time: null,
+			date: null,
 			tags: ['new','killer'],
 			id: 0,
 			pinned: true
 		},{
 			title: "Non sint mollit esse.",
 			body: "Sunt consequat aliqua velit reprehenderit reprehenderit velit est dolor ex cillum irure nisi proident amet amet irure do cupidatat non ut ut velit fugiat laboris amet cillum sed qui.",
-			time: null,
+			date: null,
 			tags:['shark','new'],
 			id:1,
 			pinned: false
 		}],
 
+		// UI control
 		body_area_height: 3,
 		title_area_height:3,
-
 		flyout_display:'hidden',
 	}
 
@@ -66,7 +75,12 @@ class MainPage extends Component{
 		} else if(type === 'button'){
 			console.log('Done');
 			console.log(newPost);
+			// configure tags
 			if (tagsEntered !== null) {newPost.tags = [...tagsEntered.split(" ")];}
+			// configure date and id 
+			newPost.date = new Date().toDateString()
+			newPost.id = Date.now()
+
 			// save everything by appending new post to state
 
 
@@ -144,9 +158,10 @@ let tagsEntered = null;
 let newPost = {
 		title: "",
 		body: "",
-		time: null,
+		date: null,
 		tags:[],
-		id: null
+		id: null,
+		pinned: false
 	} //putting it in the middle of a class is not allowed
 
 export default MainPage;

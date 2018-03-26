@@ -89,5 +89,8 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "devDependencies": {
+    "firebase": "^4.12.0"
   }
 }
