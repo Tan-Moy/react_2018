@@ -7,35 +7,13 @@ import Cards from '../../components/cards/cards';
 import firebase from '../../firebase'
 
 class Listing extends Component {
-	state = {
-		posts: []
-	};
+	state = {};
 
-
-	componentDidMount(){
-		const postsRef = firebase.database().ref('posts');
-		postsRef.on('value', (snapshot) => {
-			let items = snapshot.val()
-			console.log("componentDidMount: ", items);
-			let posts = [];
-			for (let item in items) {
-	      		posts.push({
-	      			title: items[item].title,
-	      			body: items[item].body,
-	      			date: items[item].date,
-	      			tags: items[item].tags,
-	      			id: items[item].id,
-	      			pinned: items[item].pinned
-	      		})
-	    	}
-	    	this.setState({posts:posts})
-		})
-	}
 
 	render(){
 		//to-do
 		//sort the list according to id before using
-		console.log(this.state);
+		console.log(this.props.click);
 		
 		//recent cards
 		let recent_cards = (
@@ -45,6 +23,9 @@ class Listing extends Component {
 						return <Cards
 						title={post.title}
 						body={post.body}
+						id={post.id}
+						tags={post.tags}
+						click={this.props.click}
 						key={post.id}></Cards>
 					}
 				})}
@@ -58,7 +39,10 @@ class Listing extends Component {
 					if (post.pinned){	
 						return <Cards
 						title={post.title}
+						click={this.props.click}
 						body={post.body}
+						id={post.id}
+						tags={post.tags}
 						key={post.id}></Cards>
 					}
 				})}

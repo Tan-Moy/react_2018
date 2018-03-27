@@ -22,6 +22,27 @@ class MainPage extends Component{
 		flyout_display:'hidden',
 	}
 
+	componentDidMount(){
+		const postsRef = firebase.database().ref('posts');
+		postsRef.on('value', (snapshot) => {
+			let items = snapshot.val()
+			console.log("componentDidMount: ", items);
+			let posts = [];
+			for (let item in items) {
+	      		posts.push({
+	      			title: items[item].title,
+	      			body: items[item].body,
+	      			date: items[item].date,
+	      			tags: items[item].tags,
+	      			id: item,
+	      			pinned: items[item].pinned
+	      		})
+	    	}
+	    	this.setState({posts:posts})
+		})
+	}
+
+
 
 	changeHandler = (e) => {
 		let oldbodyheight = this.state.body_area_height;
@@ -52,7 +73,7 @@ class MainPage extends Component{
 	}
 
 
-	clickHandler = (type=null,e) => {
+	clickHandler = (type = null, e) => {
 		// console.log("button: ",type)
 		if (type === 'title' && e.target.scrollHeight > e.target.clientHeight) {
 			this.setState({title_area_height:5})
@@ -65,22 +86,20 @@ class MainPage extends Component{
 				body: "",
 				date: null,
 				tags:[],
-				id: null,
 				pinned: false
 			}
 
 			// configure the key value pairs
 			newPost.title = this.state.title;
 			newPost.body = this.state.body;
-			if (this.state.tags !== "") {newPost.tags = [...this.state.tags.split(" ")];};
-			newPost.date = "${new Date().toDateString()}";
-			newPost.id = Date.now();
+			if (this.state.tags !== "") {newPost.tags = [...this.state.tags.split(",")];};
+			newPost.date = new Date().toDateString();
 			console.log(newPost)
 
 			// save to post array
-			let arr = [...this.state.posts];
-			arr.push(newPost);
-			this.setState({posts:arr})
+			// let arr = [...this.state.posts];
+			// arr.push(newPost);
+			// this.setState({posts:arr})
 
 			// save to firebase
 			const postsRef = firebase.database().ref('posts');
@@ -90,7 +109,10 @@ class MainPage extends Component{
 			this.setState({
 				title:"",
 				body:"",
-				tags:""
+				tags:"",
+				body_area_height:3,
+				title_area_height:3,
+				flyout_display:'hidden'
 			});
 		}
 	}
@@ -106,17 +128,52 @@ class MainPage extends Component{
 
 	focusLostHandler = (e) => {
 		// console.log('lost focus');
-		this.setState({body_area_height:3});
-		this.setState({title_area_height:3});
+		this.setState({
+			body_area_height:3,
+			title_area_height:3
+		});
+
 		if (!e.currentTarget.contains(e.relatedTarget)) {
 			this.setState({flyout_display:'hidden'});
     	}
   		// console.log("relatedTarget:", e.relatedTarget)
 	}
 
+	cardClickHandler = (type = null, data, e) => {
+		const itemRef = firebase.database().ref(`/posts/${data.id}`);
+		console.log(data);
+
+		// delete posts
+		if (type === 'delete') {
+			itemRef.remove()
+		}
+
+		// edit post
+
+		if (type === 'edit') {
+
+			let unpackTags = "";
+			data.tags.map((x)=>{
+				unpackTags = unpackTags + x + ','
+			})
+			console.log(typeof unpackTags);
+
+			this.setState({
+				title:data.title,
+				body:data.body,
+				body_area_height:5,
+				tags: unpackTags.replace(/(^,)|(,$)/g, ""),
+				flyout_display:'visible'
+			});
+			itemRef.remove()
+		}
+
+	}
+
 
 	render(){
 		console.log(this.state)
+		if(this.state.posts !== []){
 		return(
 			<div className={styles._mainPage} id="fly">
 				<div 
@@ -150,15 +207,17 @@ class MainPage extends Component{
 					<button
 					style={{'visibility': this.state.flyout_display}}
 					className={styles._saveBtn}
-					onClick={(e) => this.clickHandler("button",e)}>Done</button>
+					onClick={(e) => this.clickHandler("button",e)}
+					>Done</button>
 				</div>
 					<Lists 
-					data = {this.state.posts}></Lists>
+					click = {this.cardClickHandler}
+					data = {this.state.posts}
+					></Lists>
 			</div>
 		)
-	}
+	}}
 }
 
-//this is what will be updated on clicking the save button or on focus lost
 
 export default MainPage;
