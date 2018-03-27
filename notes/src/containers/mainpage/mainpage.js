@@ -14,21 +14,7 @@ class MainPage extends Component{
 		tags: "",
 
 		// sample values
-		posts: [{
-			title: "Tempor laborum eu laboris ullamco.",
-			body: "Ex elit laboris dolor irure in cupidatat esse aute dolore occaecat sit sunt reprehenderit sit in sed veniam cupidatat in.",
-			date: null,
-			tags: ['new','killer'],
-			id: 0,
-			pinned: true
-		},{
-			title: "Non sint mollit esse.",
-			body: "Sunt consequat aliqua velit reprehenderit reprehenderit velit est dolor ex cillum irure nisi proident amet amet irure do cupidatat non ut ut velit fugiat laboris amet cillum sed qui.",
-			date: null,
-			tags:['shark','new'],
-			id:1,
-			pinned: false
-		}],
+		posts: [],
 
 		// UI control
 		body_area_height: 3,
@@ -87,7 +73,7 @@ class MainPage extends Component{
 			newPost.title = this.state.title;
 			newPost.body = this.state.body;
 			if (this.state.tags !== "") {newPost.tags = [...this.state.tags.split(" ")];};
-			newPost.date = new Date().toDateString();
+			newPost.date = "${new Date().toDateString()}";
 			newPost.id = Date.now();
 			console.log(newPost)
 

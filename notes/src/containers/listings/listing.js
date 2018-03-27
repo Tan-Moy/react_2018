@@ -4,14 +4,38 @@ import React, { Component } from 'react';
 // import Pinned from '../../components/pinned/pinned';
 // import Recent from '../../components/recent/recent';
 import Cards from '../../components/cards/cards';
+import firebase from '../../firebase'
 
 class Listing extends Component {
-	state = {};
+	state = {
+		posts: []
+	};
+
+
+	componentDidMount(){
+		const postsRef = firebase.database().ref('posts');
+		postsRef.on('value', (snapshot) => {
+			let items = snapshot.val()
+			console.log("componentDidMount: ", items);
+			let posts = [];
+			for (let item in items) {
+	      		posts.push({
+	      			title: items[item].title,
+	      			body: items[item].body,
+	      			date: items[item].date,
+	      			tags: items[item].tags,
+	      			id: items[item].id,
+	      			pinned: items[item].pinned
+	      		})
+	    	}
+	    	this.setState({posts:posts})
+		})
+	}
 
 	render(){
 		//to-do
 		//sort the list according to id before using
-		console.log(this.props.data);
+		console.log(this.state);
 		
 		//recent cards
 		let recent_cards = (
