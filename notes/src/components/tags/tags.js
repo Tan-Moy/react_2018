@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './tags.css'
 
 const Tags = (props) => {
-	console.log(props.data)
+	// console.log(props.data)
 	let tags = [];
 	props.data.map((items) =>{
 		if(items.tags !== null && typeof items.tags !== 'undefined')
@@ -10,12 +10,12 @@ const Tags = (props) => {
 		return tags
 		// console.log(items.tags)
 	})
-	console.log(tags)
+	// console.log(tags)
 	return(
-		<span>
+		<div className = {styles._tagInput}>
 			<input type="text"
 			id='_tagArea'
-			placeholder="Enter tags here, separate by space" 
+			placeholder="Enter tags here, separate by comma" 
 			list="data" 
 			onChange={props.onchange}
 			value = {props.value}
@@ -26,7 +26,7 @@ const Tags = (props) => {
                     <option key={item} value={item} />
                 )}
             </datalist>
-		</span>
+		</div>
 	)
 }
 

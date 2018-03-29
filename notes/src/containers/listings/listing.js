@@ -1,63 +1,65 @@
 // this container will get data from the local/cloud database and pass it on as lists to its children who will then take it and sort it(this can be done here or in the children) and display it
 
 import React, { Component } from 'react';
-// import Pinned from '../../components/pinned/pinned';
-// import Recent from '../../components/recent/recent';
 import Cards from '../../components/cards/cards';
-import firebase from '../../firebase'
+import styles from './listing.css'
 
 class Listing extends Component {
-	state = {};
-
+	state = {}
 
 	render(){
-		//to-do
-		//sort the list according to id before using
-		console.log(this.props.click);
-		
-		//recent cards
-		let recent_cards = (
-			<div>
-				{this.props.data.map((post)=>{
-					if (!post.pinned){	
-						return <Cards
-						title={post.title}
-						body={post.body}
-						id={post.id}
-						tags={post.tags}
-						click={this.props.click}
-						key={post.id}></Cards>
-					}
-				})}
-			</div>
-		)
+		if (this.props.data.length !== 0) {
 
-		//pinned cards
-		let pinned_cards = (
-			<div>
-				{this.props.data.map((post)=>{
-					if (post.pinned){	
-						return <Cards
-						title={post.title}
-						click={this.props.click}
-						body={post.body}
-						id={post.id}
-						tags={post.tags}
-						key={post.id}></Cards>
-					}
-				})}
-			</div>
-		)
+			let recent_cards = (
+				<div className = {styles._fcontainer} >
+					{this.props.data.map((post)=>{
+						if (!post.pinned){	
+							return <Cards
+							title={post.title}
+							body={post.body}
+							id={post.id}
+							tags={post.tags}
+							click={this.props.click}
+							pin = {post.pinned}
+							key={post.id}></Cards>
+						}
+					})}
+				</div>
+			)
 
-		//final output
-		return(
-			<div>
-				<span>Pinned</span>
-				{pinned_cards}
-				<span>Recent</span>
-				{recent_cards}
-			</div>
-		);
+			//pinned cards
+			let pinned_cards = (
+				<div className = {styles._fcontainer} >
+					{this.props.data.map((post)=>{
+						if (post.pinned){	
+							return <Cards
+							title={post.title}
+							click={this.props.click}
+							body={post.body}
+							id={post.id}
+							tags={post.tags}
+							pin = {post.pinned}
+							key={post.id}></Cards>
+						}
+					})}
+				</div>
+			)
+
+			//final output
+			return(
+				<div className={styles._fcontainer}>
+					<div className = {styles._underline} >Pinned</div>
+						{pinned_cards}
+					<br/>
+					<div className = {styles._underline} >Recent</div>
+						{recent_cards}
+				</div>
+			);
+		} else {
+			return(
+				<div>Loading...</div>
+			)
+		}
 	};
 };
 

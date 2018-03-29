@@ -15,3 +15,8 @@ input{
     width: 100%;
 }
 
+._tagInput{
+   display: inline-block;
+   width: 69%;
+   margin-right: 1%;
+}

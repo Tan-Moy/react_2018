@@ -26,7 +26,7 @@ class MainPage extends Component{
 		const postsRef = firebase.database().ref('posts');
 		postsRef.on('value', (snapshot) => {
 			let items = snapshot.val()
-			console.log("componentDidMount: ", items);
+			// console.log("componentDidMount: ", items);
 			let posts = [];
 			for (let item in items) {
 	      		posts.push({
@@ -151,29 +151,35 @@ class MainPage extends Component{
 		// edit post
 
 		if (type === 'edit') {
-
+			// console.log(data.tags);
 			let unpackTags = "";
-			data.tags.map((x)=>{
-				unpackTags = unpackTags + x + ','
-			})
-			console.log(typeof unpackTags);
+			if (typeof data.tags !== 'undefined') {	
+				data.tags.map((x)=>{
+					unpackTags = unpackTags + x + ',';
+				})
+				unpackTags = unpackTags.replace(/(^,)|(,$)/g, "");
+			}
 
 			this.setState({
 				title:data.title,
 				body:data.body,
 				body_area_height:5,
-				tags: unpackTags.replace(/(^,)|(,$)/g, ""),
+				tags: unpackTags,
 				flyout_display:'visible'
 			});
 			itemRef.remove()
 		}
 
+		// pin post
+		if (type === 'pin') {
+			itemRef.update({ pinned: true })
+		}
 	}
 
 
 	render(){
-		console.log(this.state)
-		if(this.state.posts !== []){
+		// todo: change [] to 0 later for loading screen
+		if(this.state.posts.length !== [] ){
 		return(
 			<div className={styles._mainPage} id="fly">
 				<div 
@@ -197,23 +203,33 @@ class MainPage extends Component{
 					 value = {this.state.body}
 					 ></BodyArea>
 
-					<Tags
+					 
+			 		<Tags
 					 data = {this.state.posts}
 					 onchange = {this.changeHandler}
 					 display = {this.state.flyout_display}
 					 value = {this.state.tags}
 					></Tags>
 
+						
 					<button
 					style={{'visibility': this.state.flyout_display}}
 					className={styles._saveBtn}
 					onClick={(e) => this.clickHandler("button",e)}
 					>Done</button>
+						 
 				</div>
+
 					<Lists 
 					click = {this.cardClickHandler}
 					data = {this.state.posts}
 					></Lists>
+			</div>
+		)
+	} else {
+		return(
+			<div>
+				<h1>Loading...</h1>
 			</div>
 		)
 	}}
